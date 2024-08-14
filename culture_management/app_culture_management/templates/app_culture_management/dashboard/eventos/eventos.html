@@ -58,7 +58,6 @@
 <p>Nenhum evento disponível no momento.</p>
 {% endif %}
 
-<!-- confirmação de exclusão -->
 <div id="deleteEventModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -78,7 +77,6 @@
     </div>
 </div>
 
-<!-- criar/editar evento -->
 <div id="createEventModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -150,7 +148,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         var modalCreateEdit = document.getElementById("createEventModal");
 
-        // Abrir modal para criação de novo evento
         document.getElementById("openModal").onclick = function () {
             modalCreateEdit.querySelector('form').reset();
             modalCreateEdit.querySelector('h2').textContent = "Criar Novo Evento";
@@ -158,7 +155,6 @@
             modalCreateEdit.style.display = "flex";
         }
 
-        // Abrir modal para edição de evento
         document.querySelectorAll(".btn-edit").forEach(function (btn) {
             btn.addEventListener("click", function (event) {
                 event.preventDefault();
@@ -186,7 +182,6 @@
             });
         });
 
-        // Fechar modais
         var spanClose = document.getElementsByClassName("close");
         Array.from(spanClose).forEach(function (span) {
             span.onclick = function () {

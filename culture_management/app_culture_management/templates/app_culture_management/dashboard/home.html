@@ -3,15 +3,13 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <section class="hero">
     <div class="hero-content">
-        <h1>Bem-vindo, {{ user.username }}!</h1>
+        <h1>Bem-vindo, <b>{{ user.username }}</b>!</h1>
         <p>Aqui estão alguns eventos disponíveis para você.</p>
     </div>
 </section>
 
-<!-- Events Section -->
 <section class="events-section">
     <h2>Eventos Disponíveis</h2>
     <div class="events-container">

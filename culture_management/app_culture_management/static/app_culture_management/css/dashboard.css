@@ -487,6 +487,10 @@ body {
   margin-top: 0;
 }
 
+b {
+  text-transform: uppercase;
+}
+
 .event-time {
   position: absolute;
   bottom: 1rem;

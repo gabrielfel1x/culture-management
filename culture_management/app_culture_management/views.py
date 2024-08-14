@@ -4,6 +4,7 @@ from .forms import EventoForm, SignUpForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+from django.http import JsonResponse
 
 def signin(request):
     if request.method == 'POST':
@@ -73,18 +74,27 @@ def criar_evento(request):
     
     return render(request, 'app_culture_management/dashboard/eventos/criar_evento.html', {'form': form})
 
-
 def editar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
-    if request.method == "POST":
+    if request.method == 'POST':
         form = EventoForm(request.POST, instance=evento)
         if form.is_valid():
             form.save()
-            return redirect('lista_eventos')
+            return redirect('listar_eventos')
     else:
-        form = EventoForm(instance=evento)
-    
-    return render(request, 'app_culture_management/eventos/partial_editar_evento.html', {'form': form})
+        data = {
+            'titulo': evento.titulo,
+            'tipo': evento.tipo,
+            'data': evento.data,
+            'horario': evento.horario,
+            'local': evento.local,
+            'cidade': evento.cidade,
+            'valor': evento.valor,
+            'entrada_gratuita': evento.entrada_gratuita,
+            'vagas': evento.vagas,
+        }
+        return JsonResponse(data)
+
 
 def deletar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)

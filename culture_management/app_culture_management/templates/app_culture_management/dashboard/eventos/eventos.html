@@ -78,12 +78,13 @@
     </div>
 </div>
 
-<!-- criar novo evento -->
+<!-- criar/editar evento -->
 <div id="createEventModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Criar Novo Evento</h2>
-        <form method="post" action="{% url 'criar_evento' %}">
+        <h2 id="modalTitle">{% if edit_mode %}Editar Evento{% else %}Criar Novo Evento{% endif %}</h2>
+        <form id="eventForm" method="post"
+            action="{% if edit_mode %}{% url 'editar_evento' evento.pk %}{% else %}{% url 'criar_evento' %}{% endif %}">
             {% csrf_token %}
             <div class="modal-form">
                 <div class="form-row">
@@ -91,17 +92,14 @@
                         <label for="{{ form.titulo.id_for_label }}">Título:</label>
                         {{ form.titulo }}
                     </div>
-
                     <div class="form-group">
                         <label for="{{ form.tipo.id_for_label }}">Tipo:</label>
                         {{ form.tipo }}
                     </div>
-
                     <div class="form-group">
                         <label for="{{ form.data.id_for_label }}">Data:</label>
                         {{ form.data }}
                     </div>
-
                     <div class="form-group">
                         <label for="{{ form.horario.id_for_label }}">Horário:</label>
                         {{ form.horario }}
@@ -113,22 +111,18 @@
                         <label for="{{ form.local.id_for_label }}">Local:</label>
                         {{ form.local }}
                     </div>
-
                     <div class="form-group">
                         <label for="{{ form.cidade.id_for_label }}">Cidade:</label>
                         {{ form.cidade }}
                     </div>
-
                     <div class="form-group">
                         <label for="{{ form.valor.id_for_label }}">Valor:</label>
                         {{ form.valor }}
                     </div>
-
                     <div class="form-group">
                         <label for="{{ form.entrada_gratuita.id_for_label }}">Entrada Gratuita:</label>
                         {{ form.entrada_gratuita }}
                     </div>
-
                     <div class="form-group">
                         <label for="{{ form.vagas.id_for_label }}">Vagas:</label>
                         {{ form.vagas }}
@@ -142,7 +136,8 @@
                 {% endif %}
             </div>
             <div class="modal-buttons">
-                <button type="submit" class="btn btn-primary save">Salvar Evento</button>
+                <button type="submit" class="btn btn-primary save">{% if edit_mode %}Salvar Alterações{% else %}Salvar
+                    Evento{% endif %}</button>
             </div>
         </form>
     </div>
@@ -150,30 +145,103 @@
 
 
 
-<!-- editar evento -->
-<div id="editEventModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div id="editEventContainer">
-            <!-- O conteúdo do formulário de edição será carregado aqui via AJAX -->
-        </div>
-    </div>
-</div>
-
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        var modalCreateEdit = document.getElementById("createEventModal");
+
+        // Abrir modal para criação de novo evento
+        document.getElementById("openModal").onclick = function () {
+            modalCreateEdit.querySelector('form').reset();
+            modalCreateEdit.querySelector('h2').textContent = "Criar Novo Evento";
+            modalCreateEdit.querySelector('form').action = "{% url 'criar_evento' %}";
+            modalCreateEdit.style.display = "flex";
+        }
+
+        // Abrir modal para edição de evento
+        document.querySelectorAll(".btn-edit").forEach(function (btn) {
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+                var eventId = this.getAttribute("data-event-id");
+                var url = this.getAttribute("data-url");
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        modalCreateEdit.querySelector('h2').textContent = "Editar Evento";
+                        modalCreateEdit.querySelector('form').action = "{% url 'editar_evento' 0 %}".replace('0', eventId);
+
+                        modalCreateEdit.querySelector('#id_titulo').value = data.titulo;
+                        modalCreateEdit.querySelector('#id_tipo').value = data.tipo;
+                        modalCreateEdit.querySelector('#id_data').value = data.data;
+                        modalCreateEdit.querySelector('#id_horario').value = data.horario;
+                        modalCreateEdit.querySelector('#id_local').value = data.local;
+                        modalCreateEdit.querySelector('#id_cidade').value = data.cidade;
+                        modalCreateEdit.querySelector('#id_valor').value = data.valor;
+                        modalCreateEdit.querySelector('#id_entrada_gratuita').checked = data.entrada_gratuita;
+                        modalCreateEdit.querySelector('#id_vagas').value = data.vagas;
+
+                        modalCreateEdit.style.display = "flex";
+                    });
+            });
+        });
+
+        // Fechar modais
+        var spanClose = document.getElementsByClassName("close");
+        Array.from(spanClose).forEach(function (span) {
+            span.onclick = function () {
+                modalCreateEdit.style.display = "none";
+            }
+        });
+
+        window.onclick = function (event) {
+            if (event.target == modalCreateEdit) {
+                modalCreateEdit.style.display = "none";
+            }
+        }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
         var modalDelete = document.getElementById("deleteEventModal");
         var btnsDelete = document.querySelectorAll(".btn-delete");
-        var modalCreate = document.getElementById("createEventModal");
+        var modalCreateEdit = document.getElementById("createEventModal");
         var btnCreate = document.getElementById("openModal");
-        var modalEdit = document.getElementById("editEventModal");
         var spanClose = document.getElementsByClassName("close");
 
         btnCreate.onclick = function () {
-            modalCreate.style.display = "flex";
+            modalCreateEdit.querySelector('form').reset();
+            modalCreateEdit.querySelector('h2').textContent = "Criar Novo Evento";
+            modalCreateEdit.querySelector('form').action = "{% url 'criar_evento' %}";
+            modalCreateEdit.style.display = "flex";
         }
+
+        document.querySelectorAll(".btn-edit").forEach(function (btn) {
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+                var eventId = this.getAttribute("data-event-id");
+                var url = this.getAttribute("data-url");
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        modalCreateEdit.querySelector('h2').textContent = "Editar Evento";
+                        modalCreateEdit.querySelector('form').action = "{% url 'editar_evento' 0 %}".replace('0', eventId);
+
+                        modalCreateEdit.querySelector('#id_titulo').value = data.titulo;
+                        modalCreateEdit.querySelector('#id_tipo').value = data.tipo;
+                        modalCreateEdit.querySelector('#id_data').value = data.data;
+                        modalCreateEdit.querySelector('#id_horario').value = data.horario;
+                        modalCreateEdit.querySelector('#id_local').value = data.local;
+                        modalCreateEdit.querySelector('#id_cidade').value = data.cidade;
+                        modalCreateEdit.querySelector('#id_valor').value = data.valor;
+                        modalCreateEdit.querySelector('#id_entrada_gratuita').checked = data.entrada_gratuita;
+                        modalCreateEdit.querySelector('#id_vagas').value = data.vagas;
+
+                        modalCreateEdit.style.display = "flex";
+                    });
+            });
+        });
 
         btnsDelete.forEach(function (btn) {
             btn.addEventListener("click", function (event) {
@@ -189,33 +257,17 @@
             });
         });
 
-        document.querySelectorAll(".btn-edit").forEach(function (btn) {
-            btn.addEventListener("click", function (event) {
-                event.preventDefault();
-                var url = this.getAttribute("data-url");
-
-                fetch(url)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById("editEventContainer").innerHTML = html;
-                        modalEdit.style.display = "flex";
-                    });
-            });
-        });
-
         Array.from(spanClose).forEach(function (span) {
             span.onclick = function () {
                 modalDelete.style.display = "none";
-                modalCreate.style.display = "none";
-                modalEdit.style.display = "none";
+                modalCreateEdit.style.display = "none";
             }
         });
 
         window.onclick = function (event) {
-            if (event.target == modalDelete || event.target == modalCreate || event.target == modalEdit) {
+            if (event.target == modalDelete || event.target == modalCreateEdit) {
                 modalDelete.style.display = "none";
-                modalCreate.style.display = "none";
-                modalEdit.style.display = "none";
+                modalCreateEdit.style.display = "none";
             }
         }
     });

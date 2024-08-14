@@ -21,6 +21,7 @@
   color: var(--card-foreground);
   border-radius: var(--radius);
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 .event-table th,
@@ -141,6 +142,7 @@ b {
   .event-table {
     display: block;
     overflow-x: auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 

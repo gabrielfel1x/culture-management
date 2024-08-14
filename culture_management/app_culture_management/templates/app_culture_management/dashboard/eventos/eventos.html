@@ -122,13 +122,21 @@
                         <label for="{{ form.valor.id_for_label }}">Valor:</label>
                         {{ form.valor }}
                     </div>
-                    <div class="form-group">
-                        <label for="{{ form.entrada_gratuita.id_for_label }}">Entrada Gratuita:</label>
-                        {{ form.entrada_gratuita }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <label for="{{ form.entrada_gratuita.id_for_label }}">
+                            {{ form.entrada_gratuita }} Entrada Gratuita
+                        </label>
                     </div>
-                    <div class="form-group">
-                        <label for="{{ form.vagas.id_for_label }}">Vagas:</label>
-                        {{ form.vagas }}
+                    <div class="form-group vagas-group">
+                        <label for="id_vagas">Vagas:</label>
+                        <input type="number" id="id_vagas" name="vagas" class="form-control" placeholder="">
+                        <label for="id_vagas_ilimitadas">
+                            <input type="checkbox" id="id_vagas_ilimitadas" name="vagas_ilimitadas">
+                            Vagas Ilimitadas
+                        </label>
                     </div>
                 </div>
 
@@ -146,14 +154,44 @@
     </div>
 </div>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var modalCreateEdit = document.getElementById("createEventModal");
+        const entradaGratuitaCheckbox = document.getElementById("id_entrada_gratuita");
+        const valorInput = document.querySelector("input[name='valor']");
+        const vagasIlimitadasCheckbox = document.getElementById("id_vagas_ilimitadas");
+        const vagasInput = document.getElementById("id_vagas");
+
+        function toggleValorInput() {
+            if (entradaGratuitaCheckbox.checked) {
+                valorInput.disabled = true;
+                valorInput.value = '';
+            } else {
+                valorInput.disabled = false;
+            }
+        }
+
+        function toggleVagasInput() {
+            if (vagasIlimitadasCheckbox.checked) {
+                vagasInput.disabled = true;
+                vagasInput.value = '';
+            } else {
+                vagasInput.disabled = false;
+            }
+        }
+
+        entradaGratuitaCheckbox.addEventListener("change", toggleValorInput);
+        vagasIlimitadasCheckbox.addEventListener("change", toggleVagasInput);
+
+        toggleValorInput();
+        toggleVagasInput();
 
         document.getElementById("openModal").onclick = function () {
             modalCreateEdit.querySelector('form').reset();
             modalCreateEdit.querySelector('h2').textContent = "Criar Novo Evento";
             modalCreateEdit.querySelector('form').action = "{% url 'criar_evento' %}";
+            modalCreateEdit.querySelector('#id_vagas_ilimitadas').checked = false;
             modalCreateEdit.style.display = "flex";
         }
 
@@ -178,6 +216,8 @@
                         modalCreateEdit.querySelector('#id_cidade').value = data.cidade;
                         modalCreateEdit.querySelector('#id_valor').value = data.valor;
                         modalCreateEdit.querySelector('#id_entrada_gratuita').checked = data.entrada_gratuita;
+                        modalCreateEdit.querySelector('#id_vagas').value = data.vagas || ''; // Limpa o campo se vagas for None
+                        modalCreateEdit.querySelector('#id_vagas_ilimitadas').checked = !data.vagas;
                         modalCreateEdit.querySelector('#id_vagas').value = data.vagas;
 
                         modalCreateEdit.style.display = "flex";

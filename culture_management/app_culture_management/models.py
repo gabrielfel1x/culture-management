@@ -19,7 +19,7 @@ class Evento(models.Model):
     cidade = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     entrada_gratuita = models.BooleanField(default=False)
-    vagas = models.PositiveIntegerField(null=True, blank=True)
+    vagas = models.PositiveIntegerField(null=True, blank=True, help_text="")
 
     def __str__(self):
         return self.titulo

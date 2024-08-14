@@ -17,7 +17,7 @@ class EventoForm(forms.ModelForm):
             'cidade': forms.TextInput(attrs={'class': 'form-control'}),
             'valor': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'entrada_gratuita': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'vagas': forms.NumberInput(attrs={'class': 'form-control'}),
+            'vagas': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': ''}),
         }
 
 

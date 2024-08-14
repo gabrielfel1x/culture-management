@@ -12,7 +12,8 @@ class Evento(models.Model):
 
     titulo = models.CharField(max_length=255)
     tipo = models.CharField(max_length=50, choices=TIPOS_EVENTO)
-    data = models.DateField()
+    data_inicio = models.DateField()
+    data_fim = models.DateField()
     horario = models.TimeField()
     local = models.CharField(max_length=255)
     cidade = models.CharField(max_length=100)

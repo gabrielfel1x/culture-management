@@ -13,7 +13,8 @@
         <tr>
             <th>Ações</th>
             <th>Título</th>
-            <th>Data</th>
+            <th>Data de Início</th>
+            <th>Data de Fim</th>
             <th>Cidade</th>
             <th>Horário</th>
             <th>Local</th>
@@ -31,7 +32,8 @@
                     data-event-title="{{ evento.titulo }}"><i class="fas fa-trash"></i></a>
             </td>
             <td>{{ evento.titulo }}</td>
-            <td>{{ evento.data }}</td>
+            <td>{{ evento.data_inicio }}</td>
+            <td>{{ evento.data_fim }}</td>
             <td>{{ evento.cidade }}</td>
             <td>{{ evento.horario }}</td>
             <td>{{ evento.local }}</td>
@@ -76,7 +78,6 @@
         </form>
     </div>
 </div>
-
 <div id="createEventModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -95,8 +96,12 @@
                         {{ form.tipo }}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.data.id_for_label }}">Data:</label>
-                        {{ form.data }}
+                        <label for="{{ form.data_inicio.id_for_label }}">Data de Início:</label>
+                        {{ form.data_inicio }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.data_fim.id_for_label }}">Data de Fim:</label>
+                        {{ form.data_fim }}
                     </div>
                     <div class="form-group">
                         <label for="{{ form.horario.id_for_label }}">Horário:</label>
@@ -141,9 +146,6 @@
     </div>
 </div>
 
-
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var modalCreateEdit = document.getElementById("createEventModal");
@@ -169,7 +171,8 @@
 
                         modalCreateEdit.querySelector('#id_titulo').value = data.titulo;
                         modalCreateEdit.querySelector('#id_tipo').value = data.tipo;
-                        modalCreateEdit.querySelector('#id_data').value = data.data;
+                        modalCreateEdit.querySelector('#id_data_inicio').value = data.data_inicio;
+                        modalCreateEdit.querySelector('#id_data_fim').value = data.data_fim;
                         modalCreateEdit.querySelector('#id_horario').value = data.horario;
                         modalCreateEdit.querySelector('#id_local').value = data.local;
                         modalCreateEdit.querySelector('#id_cidade').value = data.cidade;
@@ -204,6 +207,20 @@
         var btnCreate = document.getElementById("openModal");
         var spanClose = document.getElementsByClassName("close");
 
+        btnsDelete.forEach(function (btn) {
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+                var eventId = this.getAttribute("data-event-id");
+                var eventTitle = this.getAttribute("data-event-title");
+
+                document.getElementById("eventTitle").textContent = eventTitle;
+                document.getElementById("eventId").value = eventId;
+                document.getElementById("deleteEventForm").action = "{% url 'deletar_evento' 0 %}".replace('0', eventId);
+
+                modalDelete.style.display = "flex";
+            });
+        });
+
         btnCreate.onclick = function () {
             modalCreateEdit.querySelector('form').reset();
             modalCreateEdit.querySelector('h2').textContent = "Criar Novo Evento";
@@ -225,7 +242,8 @@
 
                         modalCreateEdit.querySelector('#id_titulo').value = data.titulo;
                         modalCreateEdit.querySelector('#id_tipo').value = data.tipo;
-                        modalCreateEdit.querySelector('#id_data').value = data.data;
+                        modalCreateEdit.querySelector('#id_data_inicio').value = data.data_inicio;
+                        modalCreateEdit.querySelector('#id_data_fim').value = data.data_fim;
                         modalCreateEdit.querySelector('#id_horario').value = data.horario;
                         modalCreateEdit.querySelector('#id_local').value = data.local;
                         modalCreateEdit.querySelector('#id_cidade').value = data.cidade;
@@ -238,35 +256,34 @@
             });
         });
 
+        Array.from(spanClose).forEach(function (span) {
+            span.onclick = function () {
+                modalCreateEdit.style.display = "none";
+                modalDelete.style.display = "none";
+            }
+        });
+
+        window.onclick = function (event) {
+            if (event.target == modalCreateEdit || event.target == modalDelete) {
+                modalCreateEdit.style.display = "none";
+                modalDelete.style.display = "none";
+            }
+        }
+
+
+
         btnsDelete.forEach(function (btn) {
             btn.addEventListener("click", function (event) {
                 event.preventDefault();
                 var eventId = this.getAttribute("data-event-id");
                 var eventTitle = this.getAttribute("data-event-title");
 
-                document.getElementById("eventTitle").textContent = eventTitle;
-                document.getElementById("eventId").value = eventId;
-                document.getElementById("deleteEventForm").action = "{% url 'deletar_evento' 0 %}".replace('0', eventId);
-
+                modalDelete.querySelector("#eventId").value = eventId;
+                modalDelete.querySelector("#eventTitle").textContent = eventTitle;
                 modalDelete.style.display = "flex";
             });
         });
-
-        Array.from(spanClose).forEach(function (span) {
-            span.onclick = function () {
-                modalDelete.style.display = "none";
-                modalCreateEdit.style.display = "none";
-            }
-        });
-
-        window.onclick = function (event) {
-            if (event.target == modalDelete || event.target == modalCreateEdit) {
-                modalDelete.style.display = "none";
-                modalCreateEdit.style.display = "none";
-            }
-        }
     });
 </script>
-
 
 {% endblock %}

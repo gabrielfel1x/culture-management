@@ -76,7 +76,8 @@ def editar_evento(request, pk):
         data = {
             'titulo': evento.titulo,
             'tipo': evento.tipo,
-            'data': evento.data,
+            'data_inicio': evento.data_inicio,
+            'data_fim': evento.data_fim,
             'horario': evento.horario,
             'local': evento.local,
             'cidade': evento.cidade,

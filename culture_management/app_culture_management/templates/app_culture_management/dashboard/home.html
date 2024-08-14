@@ -17,18 +17,19 @@
         {% for evento in eventos %}
         <article class="event-card">
             <h3>{{ evento.titulo }}</h3>
-            <p><strong>Data:</strong> {{ evento.data }}</p>
-            <p><strong>Cidade:</strong> {{ evento.cidade }}</p>
-            <p><strong>Local:</strong> {{ evento.local }}</p>
-            <p><strong>Valor:</strong>
-                {% if evento.entrada_gratuita %}
-                Gratuito
-                {% else %}
-                R$ {{ evento.valor }}
-                {% endif %}
-            </p>
-            <div class="event-time">
-                <i class="fas fa-clock"></i> {{ evento.horario }}
+            <div class="event-details">
+                <p><i class="fas fa-calendar-day"></i> <strong>Data de Início:</strong> {{ evento.data_inicio }}</p>
+                <p><i class="fas fa-calendar-day"></i> <strong>Data de Fim:</strong> {{ evento.data_fim }}</p>
+                <p><i class="fas fa-city"></i> <strong>Cidade:</strong> {{ evento.cidade }}</p>
+                <p><i class="fas fa-map-marker-alt"></i> <strong>Local:</strong> {{ evento.local }}</p>
+                <p><i class="fas fa-tag"></i> <strong>Valor:</strong>
+                    {% if evento.entrada_gratuita %}
+                    Gratuito
+                    {% else %}
+                    R$ {{ evento.valor }}
+                    {% endif %}
+                </p>
+                <p><i class="fas fa-clock"></i> <strong>Horário:</strong> {{ evento.horario }}</p>
             </div>
         </article>
         {% endfor %}

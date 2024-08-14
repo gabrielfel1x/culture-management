@@ -1,0 +1,225 @@
+{% extends 'app_culture_management/dashboard/base.html' %}
+
+{% block title %}Lista de Eventos{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Eventos</h1>
+    <a href="#" id="openModal" class="btn-create-event">+ Novo Evento</a>
+</div>
+
+<table class="event-table">
+    <thead>
+        <tr>
+            <th>Ações</th>
+            <th>Título</th>
+            <th>Data</th>
+            <th>Cidade</th>
+            <th>Horário</th>
+            <th>Local</th>
+            <th>Valor</th>
+            <th>Vagas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for evento in eventos %}
+        <tr>
+            <td class="td-actions">
+                <a href="#" class="btn btn-edit" data-event-id="{{ evento.pk }}"
+                    data-url="{% url 'editar_evento' evento.pk %}"><i class="fas fa-edit"></i></a>
+                <a href="#" class="btn btn-delete" data-event-id="{{ evento.pk }}"
+                    data-event-title="{{ evento.titulo }}"><i class="fas fa-trash"></i></a>
+            </td>
+            <td>{{ evento.titulo }}</td>
+            <td>{{ evento.data }}</td>
+            <td>{{ evento.cidade }}</td>
+            <td>{{ evento.horario }}</td>
+            <td>{{ evento.local }}</td>
+            <td>
+                {% if evento.entrada_gratuita %}
+                Gratuito
+                {% else %}
+                R$ {{ evento.valor }}
+                {% endif %}
+            </td>
+            <td>
+                {% if evento.vagas %}
+                {{ evento.vagas }}
+                {% else %}
+                Ilimitado
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not eventos %}
+<p>Nenhum evento disponível no momento.</p>
+{% endif %}
+
+<!-- confirmação de exclusão -->
+<div id="deleteEventModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+            <h2>Excluir Evento</h2>
+        </div>
+        <div class="modal-body">
+            <p>Tem certeza de que deseja excluir o evento "<span id="eventTitle"></span>"?</p>
+        </div>
+        <form id="deleteEventForm" method="post" action="{% url 'deletar_evento' 0 %}">
+            {% csrf_token %}
+            <input type="hidden" id="eventId" name="eventId">
+            <div class="modal-buttons">
+                <button type="submit" class="btn confirm-delete">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- criar novo evento -->
+<div id="createEventModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Criar Novo Evento</h2>
+        <form method="post" action="{% url 'criar_evento' %}">
+            {% csrf_token %}
+            <div class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.titulo.id_for_label }}">Título:</label>
+                        {{ form.titulo }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.tipo.id_for_label }}">Tipo:</label>
+                        {{ form.tipo }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.data.id_for_label }}">Data:</label>
+                        {{ form.data }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.horario.id_for_label }}">Horário:</label>
+                        {{ form.horario }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.local.id_for_label }}">Local:</label>
+                        {{ form.local }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.cidade.id_for_label }}">Cidade:</label>
+                        {{ form.cidade }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.valor.id_for_label }}">Valor:</label>
+                        {{ form.valor }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.entrada_gratuita.id_for_label }}">Entrada Gratuita:</label>
+                        {{ form.entrada_gratuita }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.vagas.id_for_label }}">Vagas:</label>
+                        {{ form.vagas }}
+                    </div>
+                </div>
+
+                {% if form.errors %}
+                <div class="form-errors">
+                    {{ form.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-primary save">Salvar Evento</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- editar evento -->
+<div id="editEventModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="editEventContainer">
+            <!-- O conteúdo do formulário de edição será carregado aqui via AJAX -->
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalDelete = document.getElementById("deleteEventModal");
+        var btnsDelete = document.querySelectorAll(".btn-delete");
+        var modalCreate = document.getElementById("createEventModal");
+        var btnCreate = document.getElementById("openModal");
+        var modalEdit = document.getElementById("editEventModal");
+        var spanClose = document.getElementsByClassName("close");
+
+        btnCreate.onclick = function () {
+            modalCreate.style.display = "flex";
+        }
+
+        btnsDelete.forEach(function (btn) {
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+                var eventId = this.getAttribute("data-event-id");
+                var eventTitle = this.getAttribute("data-event-title");
+
+                document.getElementById("eventTitle").textContent = eventTitle;
+                document.getElementById("eventId").value = eventId;
+                document.getElementById("deleteEventForm").action = "{% url 'deletar_evento' 0 %}".replace('0', eventId);
+
+                modalDelete.style.display = "flex";
+            });
+        });
+
+        document.querySelectorAll(".btn-edit").forEach(function (btn) {
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+                var url = this.getAttribute("data-url");
+
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById("editEventContainer").innerHTML = html;
+                        modalEdit.style.display = "flex";
+                    });
+            });
+        });
+
+        Array.from(spanClose).forEach(function (span) {
+            span.onclick = function () {
+                modalDelete.style.display = "none";
+                modalCreate.style.display = "none";
+                modalEdit.style.display = "none";
+            }
+        });
+
+        window.onclick = function (event) {
+            if (event.target == modalDelete || event.target == modalCreate || event.target == modalEdit) {
+                modalDelete.style.display = "none";
+                modalCreate.style.display = "none";
+                modalEdit.style.display = "none";
+            }
+        }
+    });
+</script>
+
+
+{% endblock %}

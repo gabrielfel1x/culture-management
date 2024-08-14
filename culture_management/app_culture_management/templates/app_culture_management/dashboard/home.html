@@ -1,0 +1,42 @@
+{% extends 'app_culture_management/dashboard/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Bem-vindo, {{ user.username }}!</h1>
+        <p>Aqui estão alguns eventos disponíveis para você.</p>
+    </div>
+</section>
+
+<!-- Events Section -->
+<section class="events-section">
+    <h2>Eventos Disponíveis</h2>
+    <div class="events-container">
+        {% if eventos %}
+        {% for evento in eventos %}
+        <article class="event-card">
+            <h3>{{ evento.titulo }}</h3>
+            <p><strong>Data:</strong> {{ evento.data }}</p>
+            <p><strong>Cidade:</strong> {{ evento.cidade }}</p>
+            <p><strong>Local:</strong> {{ evento.local }}</p>
+            <p><strong>Valor:</strong>
+                {% if evento.entrada_gratuita %}
+                Gratuito
+                {% else %}
+                R$ {{ evento.valor }}
+                {% endif %}
+            </p>
+            <div class="event-time">
+                <i class="fas fa-clock"></i> {{ evento.horario }}
+            </div>
+        </article>
+        {% endfor %}
+        {% else %}
+        <p>Nenhum evento disponível no momento.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

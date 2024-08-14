@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'app_culture_management/css/dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="logo">Dashboard</div>
+            <nav class="nav">
+                <a href="{% url 'home' %}" class="nav-item {% if request.path == '/home/' %}active{% endif %}">Home</a>
+                <a href="{% url 'listar_eventos' %}"
+                    class="nav-item {% if request.path == '/eventos/' %}active{% endif %}">Eventos</a>
+                <a href="{% url 'perfil' %}"
+                    class="nav-item {% if request.path == '/perfil/' %}active{% endif %}">Perfil</a>
+            </nav>
+            <div class="sidebar-footer">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </aside>
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+</body>
+
+</html>

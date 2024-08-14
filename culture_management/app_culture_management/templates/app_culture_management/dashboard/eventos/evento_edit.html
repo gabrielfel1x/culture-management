@@ -1,0 +1,53 @@
+<form method="post" action="{% url 'editar_evento' evento.pk %}">
+    {% csrf_token %}
+    <div class="modal-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.titulo.id_for_label }}">Título:</label>
+                {{ form.titulo }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.tipo.id_for_label }}">Tipo:</label>
+                {{ form.tipo }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.data.id_for_label }}">Data:</label>
+                {{ form.data }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.horario.id_for_label }}">Horário:</label>
+                {{ form.horario }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.local.id_for_label }}">Local:</label>
+                {{ form.local }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.cidade.id_for_label }}">Cidade:</label>
+                {{ form.cidade }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.valor.id_for_label }}">Valor:</label>
+                {{ form.valor }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.entrada_gratuita.id_for_label }}">Entrada Gratuita:</label>
+                {{ form.entrada_gratuita }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.vagas.id_for_label }}">Vagas:</label>
+                {{ form.vagas }}
+            </div>
+        </div>
+        {% if form.errors %}
+        <div class="form-errors">
+            {{ form.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="modal-buttons">
+        <button type="submit" class="btn btn-primary save">Salvar Evento</button>
+    </div>
+</form>

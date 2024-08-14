@@ -8,7 +8,4 @@ urlpatterns = [
     path('eventos/<int:pk>/', views.detalhes_evento, name='detalhes_evento'),
      path('eventos/editar/<int:pk>/', views.editar_evento, name='editar_evento'),
     path('eventos/<int:pk>/deletar/', views.deletar_evento, name='deletar_evento'),
-    path('relatorios/', views.relatorios, name='relatorios'),
-    path('configuracoes/', views.configuracoes, name='configuracoes'),
-    path('perfil/', views.perfil, name='perfil'),
 ]

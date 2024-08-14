@@ -1,0 +1,81 @@
+body {
+  font-family: "Arial", sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--primary);
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+input,
+select,
+textarea {
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background-color: var(--input);
+  color: var(--foreground);
+  transition: border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+button {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--ring);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    padding: 0.4rem;
+    font-size: 0.875rem;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}

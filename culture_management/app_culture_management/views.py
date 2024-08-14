@@ -39,20 +39,11 @@ def home(request):
     eventos = Evento.objects.all()
     return render(request, 'app_culture_management/dashboard/home.html', {'eventos': eventos})
 
-def relatorios(request):
-    return render(request, 'app_culture_management/dashboard/relatorios.html')
-
-def configuracoes(request):
-    return render(request, 'app_culture_management/dashboard/configuracoes.html')
-
-def perfil(request):
-    return render(request, 'app_culture_management/dashboard/perfil.html')
-
 # parte de eventos
 
 def listar_eventos(request):
     eventos = Evento.objects.all()
-    form = EventoForm()  # Instancia o formulário aqui
+    form = EventoForm()
     return render(request, 'app_culture_management/dashboard/eventos/eventos.html', {'eventos': eventos, 'form': form})
 
 
